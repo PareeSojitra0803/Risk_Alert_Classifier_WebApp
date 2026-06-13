@@ -80,6 +80,15 @@ if page == "Home":
 #Documentation Page
 elif page == "Documentation":
     st.header("📖 Project Documentation")
+    
+    st.image(
+        "images/final_model_comparison.png",
+        use_container_width=True
+    )
+
+    st.info(
+        "Multiple machine learning models were evaluated and compared throughout the experimentation process. The Tuned Random Forest Classifier consistently delivered the best overall performance, making it the final model selected for deployment in this application."
+    )
 
     try:
         with open("app_documentation.md", "r", encoding="utf-8") as f:

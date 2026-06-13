@@ -1,9 +1,5 @@
 # 📖 Risk Alert Classifier Documentation
 
-![Final Model Comparison](images/final_model_comparison.png)
-
-> **Project Insight:**  
-> Multiple machine learning models were evaluated and compared throughout the experimentation process. The Tuned Random Forest Classifier consistently delivered the best overall performance, making it the final model selected for deployment in this application.
 
 ## 🚀 Welcome
 
