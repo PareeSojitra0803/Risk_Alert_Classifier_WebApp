@@ -201,15 +201,15 @@ elif page == "Model Performance":
     st.markdown("---")
 
     st.subheader("Final Model Comparison")
-
     st.image("images/final_model_comparison.png")
+    st.info(
+        "The Tuned Random Forest Classifier achieved the best overall performance across key evaluation metrics and was selected as the final deployed model."
+    )
 
     st.subheader("Feature Importance")
-
     st.image("images/feature_importance.png")
-
-    st.success(
-        "Tuned Random Forest was selected as the final model because it achieved the strongest balance of Recall, F1-Score and AUC-ROC."
+    st.info(
+        "Payment behaviour and credit-related attributes were the most influential factors in determining customer risk."
     )
     
 
