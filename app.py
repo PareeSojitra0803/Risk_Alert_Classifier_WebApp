@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
+import matplotlib.pyplot as plt
 
 st.set_page_config(
     page_title="Risk Alert Classifier",
@@ -36,6 +37,10 @@ if page == "Home":
     """)
     
     st.image("images/final_model_comparison.png", use_container_width=True)
+
+    st.info(
+    "The Tuned Random Forest Classifier emerged as the best-performing model, achieving the strongest balance of Recall, F1-Score, and AUC-ROC, making it the most suitable choice for identifying high-risk banking customers."
+)
 
     st.markdown("---")
 
@@ -77,7 +82,7 @@ elif page == "Documentation":
     st.header("📖 Project Documentation")
 
     try:
-        with open("README.md", "r", encoding="utf-8") as f:
+        with open("app_documentation.md", "r", encoding="utf-8") as f:
             st.markdown(f.read())
     except FileNotFoundError:
         st.warning("README.md not found.")
@@ -118,27 +123,51 @@ elif page == "Visualizations":
 
     st.subheader("Class Imbalance")
     st.image("images/class_imbalance.png")
+    st.info(
+    "The dataset exhibits a class imbalance, with low-risk customers significantly outnumbering high-risk customers. This imbalance can bias machine learning models, making specialised resampling techniques necessary."
+)
 
     st.subheader("Confusion Matrix")
     st.image("images/cm_baseline.png")
+    st.info(
+    "The confusion matrix evaluates classification performance by comparing actual and predicted classes. It highlights the model's ability to correctly identify high-risk customers while minimising false alarms."
+)
 
     st.subheader("ROC Curves")
     st.image("images/roc_curves.png")
+    st.info(
+    "ROC curves compare the trade-off between True Positive Rate and False Positive Rate. Models with curves closer to the top-left corner demonstrate stronger discrimination capabilities."
+)
 
     st.subheader("Feature Importance")
     st.image("images/feature_importance.png")
+    st.info(
+    "Feature importance analysis reveals which customer attributes contribute most to risk prediction. Credit behaviour and payment-related variables emerged as key indicators of customer risk."
+)
 
     st.subheader("Final Model Comparison")
     st.image("images/final_model_comparison.png")
+    st.info(
+    "Multiple machine learning models were evaluated and compared. The Tuned Random Forest Classifier achieved the best overall balance of Recall, F1-Score, and AUC-ROC, making it the final deployed model."
+)
     
     st.subheader("Sampling Technique Comparison")
     st.image("images/sampling_comparison.png")
+    st.info(
+    "Different imbalance-handling techniques were tested to improve minority-class detection. The comparison demonstrates how resampling strategies can significantly impact model performance."
+)
 
     st.subheader("Decision Tree vs Random Forest")
     st.image("images/dt_vs_rf_accuracy.png")
+    st.info(
+    "Random Forest consistently outperformed a single Decision Tree by reducing overfitting and improving prediction stability through ensemble learning."
+)
 
     st.subheader("Decision Tree vs Random Forest Confusion Matrices")
     st.image("images/cm_trees.png")
+    st.info(
+    "Comparing confusion matrices provides a clearer understanding of how each algorithm handles classification errors. Random Forest achieved better identification of high-risk customers with fewer misclassifications."
+)
 
 
 #Model Performance Page
@@ -196,71 +225,67 @@ elif page == "Project Report":
 #Risk Prediction Page
 elif page == "Risk Prediction":
 
+
     st.header("🤖 Risk Prediction")
 
     model = joblib.load("risk_model.pkl")
 
-    age = st.number_input("Age", 18, 100, 30)
+    left_col, right_col = st.columns(2)
 
-    gender_text = st.selectbox(
-        "Gender",
-        ["Female", "Male", "Other"]
-    )
+    with left_col:
 
-    region_text = st.selectbox(
-        "Region",
-        ["Central", "East", "North", "South", "West"]
-    )
+        age = st.number_input("Age", 18, 100, 30)
 
-    employment_text = st.selectbox(
-        "Employment Type",
-        ["Salaried", "Unemployed", "Self-Employed", "Retired", "Student"]
-    )
-    
-    gender_map = {
-        "Female": 0,
-        "Male": 1,
-        "Other": 2
-    }
+        gender_text = st.selectbox(
+            "Gender",
+            ["Female", "Male", "Other"]
+        )
 
-    region_map = {
-        "Central": 0,
-        "East": 1,
-        "North": 2,
-        "South": 3,
-        "West": 4
-    }
+        region_text = st.selectbox(
+            "Region",
+            ["Central", "East", "North", "South", "West"]
+        )
 
-    employment_map = {
-        "Retired": 0,
-        "Salaried": 1,
-        "Self-Employed": 2,
-        "Student": 3,
-        "Unemployed": 4
-    }
+        employment_text = st.selectbox(
+            "Employment Type",
+            ["Salaried", "Unemployed", "Self-Employed", "Retired", "Student"]
+        )
 
-    gender = gender_map[gender_text]
-    region = region_map[region_text]
-    employment_type = employment_map[employment_text]
+        account_tenure_months = st.number_input(
+            "Account Tenure (Months)",
+            1,
+            500,
+            24
+        )
 
-    annual_income_inr = st.number_input(
-        "Annual Income (INR)",
-        value=500000
-    )
+    with right_col:
 
-    credit_score = st.number_input(
-        "Credit Score",
-        300,
-        900,
-        650
-    )
+        annual_income_inr = st.number_input(
+            "Annual Income (INR)",
+            value=500000
+        )
 
-    credit_utilization_ratio = st.number_input(
-        "Credit Utilization Ratio",
-        0.0,
-        1.0,
-        0.3
-    )
+        credit_score = st.number_input(
+            "Credit Score",
+            300,
+            900,
+            650
+        )
+
+        credit_utilization_ratio = st.number_input(
+            "Credit Utilization Ratio",
+            0.0,
+            1.0,
+            0.3
+        )
+
+        debt_balance_inr = st.number_input(
+            "Debt Balance (INR)",
+            value=10000
+        )
+
+    st.markdown("---")
+    st.subheader("Behaviour & Risk Indicators")
 
     missed_payments_12m = st.number_input(
         "Missed Payments (12 Months)",
@@ -309,19 +334,35 @@ elif page == "Risk Prediction":
         0
     )
 
-    account_tenure_months = st.number_input(
-        "Account Tenure (Months)",
-        1,
-        500,
-        24
-    )
+    gender_map = {
+        "Female": 0,
+        "Male": 1,
+        "Other": 2
+    }
 
-    debt_balance_inr = st.number_input(
-        "Debt Balance (INR)",
-        value=10000
-    )
+    region_map = {
+        "Central": 0,
+        "East": 1,
+        "North": 2,
+        "South": 3,
+        "West": 4
+    }
 
-    if st.button("Predict Risk"):
+    employment_map = {
+        "Retired": 0,
+        "Salaried": 1,
+        "Self-Employed": 2,
+        "Student": 3,
+        "Unemployed": 4
+    }
+
+    gender = gender_map[gender_text]
+    region = region_map[region_text]
+    employment_type = employment_map[employment_text]
+
+    st.markdown("---")
+
+    if st.button("🔍 Predict Customer Risk"):
 
         features = np.array([[
             age,
@@ -349,6 +390,8 @@ elif page == "Risk Prediction":
         low_risk_prob = probabilities[0] * 100
         high_risk_prob = probabilities[1] * 100
 
+        st.subheader("Risk Assessment")
+
         col1, col2 = st.columns(2)
 
         with col1:
@@ -362,17 +405,36 @@ elif page == "Risk Prediction":
                 "Low Risk Probability",
                 f"{low_risk_prob:.2f}%"
             )
-            
-        if high_risk_prob >= 70:
-            st.warning("Customer requires immediate review.")
 
-        elif high_risk_prob >= 40:
-            st.info("Customer should be monitored closely.")
+        st.progress(int(high_risk_prob))
+
+        if high_risk_prob < 30:
+            st.success("🟢 Low Risk")
+
+        elif high_risk_prob < 60:
+            st.warning("🟡 Moderate Risk")
 
         else:
-            st.success("Customer appears financially stable.")
-
+            st.error("🔴 High Risk")
+            
         if prediction == 1:
             st.error("⚠️ High Risk Customer")
         else:
             st.success("✅ Low Risk Customer")
+
+            
+        fig, ax = plt.subplots(figsize=(3, 3))
+
+        ax.pie(
+            [low_risk_prob, high_risk_prob],
+            labels=["Low Risk", "High Risk"],
+            autopct="%1.1f%%",
+            wedgeprops=dict(width=0.4)
+        )
+
+        ax.set_title("Risk Distribution")
+
+        col1, col2, col3 = st.columns([1, 2, 1])
+
+        with col2:
+            st.pyplot(fig)
